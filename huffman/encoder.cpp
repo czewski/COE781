@@ -35,6 +35,16 @@ struct CompareNodes {
     }
 };
 
+void deleteTree(HuffmanNode* node) {
+    if (!node) {
+        return;
+    }
+
+    deleteTree(node->left);
+    deleteTree(node->right);
+    delete node;
+}
+
 
 // loop na arvore e salva os codigos
 void generateCodes(const HuffmanNode* node, 
@@ -168,21 +178,19 @@ void encodePayload(std::ifstream& inFile,
 int main()
 {
    // abre a biblia em "file"
-   std::ifstream file("data/biblia.txt", std::ios::binary);
+   std::ifstream inFile("data/biblia.txt", std::ios::binary);
 
    // cria map e variavel que vai segurar cada char no loop
-   unordered_map<char, uint64_t> frequencies;
+   unordered_map<unsigned char, uint64_t> frequencies;
    char ch;
 
    uint64_t originalFileSize = 0;
-   while (file.get(ch)) {
+   while (inFile.get(ch)) {
         // unsigned prevent negative indexing/keys
         unsigned char byte = static_cast<unsigned char>(ch);
         frequencies[byte]++;
         originalFileSize++;
    }
-
-   file.close();
 
    // preciso ordenar pra criar o huffman, codigos curtos pra alta frequencia
    // na verdade posso skippar a ordenação, se eu adicionar em uma priority queue
@@ -246,12 +254,12 @@ int main()
    //             << " -> Code: " << code << '\n';
    // }
 
-   string outputPath = "";
-   
+   string outputPath = "data/biblia.huf";
+
    if (originalFileSize == 0) {
         std::ofstream outFile(outputPath, std::ios::binary);
         writeHeader(outFile, 0, frequencies);
-        return;
+        return 0;
     }
 
   
@@ -264,9 +272,11 @@ int main()
    // encode
    encodePayload(inFile, outFile, huffmanCodes);
 
-   // save file
-   // 8. Clean up allocated tree nodes
    deleteTree(root);
+
+   inFile.close();
+   outFile.close();
+   return 0;
 
 
 }
