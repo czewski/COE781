@@ -97,9 +97,6 @@ void writeHeader(std::ofstream& outFile,
     }
 }
 
-#include <fstream>
-#include <string>
-#include <cstdint>
 
 class BitWriter {
 private:
@@ -186,8 +183,7 @@ int main()
 
    uint64_t originalFileSize = 0;
    while (inFile.get(ch)) {
-        // unsigned prevent negative indexing/keys
-        unsigned char byte = static_cast<unsigned char>(ch);
+        unsigned char byte = static_cast<unsigned char>(ch); // unsigned prevent negative indexing/keys
         frequencies[byte]++;
         originalFileSize++;
    }
@@ -255,15 +251,8 @@ int main()
    // }
 
    string outputPath = "data/biblia.huf";
-
-   if (originalFileSize == 0) {
-        std::ofstream outFile(outputPath, std::ios::binary);
-        writeHeader(outFile, 0, frequencies);
-        return 0;
-    }
-
   
-   // 5. Open output file in binary mode
+   // cria arquivo saida
    std::ofstream outFile(outputPath, std::ios::binary);
 
    // criar header 
@@ -272,11 +261,9 @@ int main()
    // encode
    encodePayload(inFile, outFile, huffmanCodes);
 
+   // cleanup
    deleteTree(root);
-
    inFile.close();
    outFile.close();
    return 0;
-
-
 }
