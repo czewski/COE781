@@ -244,11 +244,7 @@ int main()
       generateCodes(root, "", huffmanCodes);
    }
 
-   // print codigos
-   // for (const auto& [byte, code] : huffmanCodes) {
-   //    std::cout << "Byte " << static_cast<int>(byte) 
-   //             << " -> Code: " << code << '\n';
-   // }
+
 
    string outputPath = "data/biblia.huf";
   
@@ -260,6 +256,14 @@ int main()
 
    // encode
    encodePayload(inFile, outFile, huffmanCodes);
+
+   std::cout << "Codificado com sucesso!.\n";
+
+  //print codigos
+   for (const auto& [byte, code] : huffmanCodes) {
+      std::cout << "Byte " << static_cast<int>(byte) 
+               << " -> Code: " << code << '\n';
+   }
 
    // cleanup
    deleteTree(root);
